@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Stock Automation Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="My investment and coding journey">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stock Automation Notes">
+<meta property="og:url" content="https://lyhcode.github.io/investment/index.html">
+<meta property="og:site_name" content="Stock Automation Notes">
+<meta property="og:description" content="My investment and coding journey">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:author" content="Kyle">
+<meta property="article:tag" content="python, trading, investment">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/investment/atom.xml" title="Stock Automation Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/investment/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/investment/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/investment/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/investment/" id="logo">Stock Automation Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/investment/" id="subtitle">Learning Process</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/investment/">Home</a>
+        
+          <a class="main-nav-link" href="/investment/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/investment/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜尋"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜尋"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://lyhcode.github.io/investment"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-08_Backtesting_Metrics" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/08_Backtesting_Metrics/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.299Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📊-08-回測績效指標-Performance-Metrics"><a href="#📊-08-回測績效指標-Performance-Metrics" class="headerlink" title="📊 08. 回測績效指標 (Performance Metrics)"></a>📊 08. 回測績效指標 (Performance Metrics)</h1><p>看策略好壞不能只看「賺多少」，還要看「風險多少」。</p>
+<h2 id="1-夏普比率-Sharpe-Ratio"><a href="#1-夏普比率-Sharpe-Ratio" class="headerlink" title="1. 夏普比率 (Sharpe Ratio)"></a>1. 夏普比率 (Sharpe Ratio)</h2><p>衡量每承擔一單位風險，能獲得多少超額報酬。<br>$$Sharpe &#x3D; \frac{R_p - R_f}{\sigma_p}$$</p>
+<ul>
+<li>$R_p$: 策略年化報酬率</li>
+<li>$R_f$: 無風險利率 (可設為 0 或美債利率)</li>
+<li>$\sigma_p$: 策略年化波動率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 假設 returns 是日報酬率 Series</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_sharpe</span>(<span class="params">returns, risk_free_rate=<span class="number">0.0</span></span>):</span><br><span class="line">    excess_returns = returns - risk_free_rate/<span class="number">252</span></span><br><span class="line">    <span class="keyword">return</span> np.sqrt(<span class="number">252</span>) * excess_returns.mean() / excess_returns.std()</span><br></pre></td></tr></table></figure>
+<p><em>註：<code>np.sqrt(252)</code> 是將日波動轉為年化波動。</em></p>
+<h2 id="2-最大回撤-Maximum-Drawdown-MDD"><a href="#2-最大回撤-Maximum-Drawdown-MDD" class="headerlink" title="2. 最大回撤 (Maximum Drawdown, MDD)"></a>2. 最大回撤 (Maximum Drawdown, MDD)</h2><p>資產從最高點回落的最大幅度。衡量策略最慘會賠多少。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_mdd</span>(<span class="params">cum_returns</span>):</span><br><span class="line">    <span class="comment"># cum_returns 是累積淨值 (e.g., 1.0, 1.02, 0.98...)</span></span><br><span class="line">    peak = cum_returns.cummax()</span><br><span class="line">    drawdown = (cum_returns - peak) / peak</span><br><span class="line">    <span class="keyword">return</span> drawdown.<span class="built_in">min</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-年化複合成長率-CAGR"><a href="#3-年化複合成長率-CAGR" class="headerlink" title="3. 年化複合成長率 (CAGR)"></a>3. 年化複合成長率 (CAGR)</h2><p>幾何平均年報酬率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_cagr</span>(<span class="params">end_value, start_value, years</span>):</span><br><span class="line">    <span class="keyword">return</span> (end_value / start_value) ** (<span class="number">1</span> / years) - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-勝率-Win-Rate"><a href="#4-勝率-Win-Rate" class="headerlink" title="4. 勝率 (Win Rate)"></a>4. 勝率 (Win Rate)</h2><p>賺錢交易次數佔總交易次數的比例。<br><strong>注意</strong>: 高勝率不代表高獲利 (e.g., 賺 1 元 9 次，賠 10 元 1 次)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假設 trade_rets 是每筆交易的報酬率列表</span></span><br><span class="line">win_rate = <span class="built_in">len</span>(trade_rets[trade_rets &gt; <span class="number">0</span>]) / <span class="built_in">len</span>(trade_rets)</span><br></pre></td></tr></table></figure>
+
+<h2 id="綜合評估程式碼範例"><a href="#綜合評估程式碼範例" class="headerlink" title="綜合評估程式碼範例"></a>綜合評估程式碼範例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">strategy_rets = df[<span class="string">&#x27;Strategy_Ret&#x27;</span>] <span class="comment"># 從上一章取得</span></span><br><span class="line"></span><br><span class="line">sharpe = calculate_sharpe(strategy_rets)</span><br><span class="line">mdd = calculate_mdd(df[<span class="string">&#x27;Cum_Strategy&#x27;</span>])</span><br><span class="line">total_ret = df[<span class="string">&#x27;Cum_Strategy&#x27;</span>].iloc[-<span class="number">1</span>] - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Sharpe Ratio: <span class="subst">&#123;sharpe:<span class="number">.2</span>f&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Max Drawdown: <span class="subst">&#123;mdd:<span class="number">.2</span>%&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Total Return: <span class="subst">&#123;total_ret:<span class="number">.2</span>%&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/08_Backtesting_Metrics/" data-id="cuid00m4hiFopUJVNeiPAiOqp" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/metrics/" rel="tag">metrics</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-07_Vectorized_Backtesting" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/07_Vectorized_Backtesting/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.299Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="🚀-07-向量化回測實作-Vectorized-Backtesting"><a href="#🚀-07-向量化回測實作-Vectorized-Backtesting" class="headerlink" title="🚀 07. 向量化回測實作 (Vectorized Backtesting)"></a>🚀 07. 向量化回測實作 (Vectorized Backtesting)</h1><p>本篇展示如何使用 Pandas 進行快速的向量化回測。</p>
+<h2 id="範例：雙均線策略回測"><a href="#範例：雙均線策略回測" class="headerlink" title="範例：雙均線策略回測"></a>範例：雙均線策略回測</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 準備數據</span></span><br><span class="line">df = yf.download(<span class="string">&#x27;SPY&#x27;</span>, start=<span class="string">&#x27;2015-01-01&#x27;</span>, end=<span class="string">&#x27;2023-01-01&#x27;</span>)</span><br><span class="line">df = df[[<span class="string">&#x27;Close&#x27;</span>]].copy()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 策略邏輯 (Signal Generation)</span></span><br><span class="line">df[<span class="string">&#x27;SMA_Fast&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=<span class="number">50</span>).mean()</span><br><span class="line">df[<span class="string">&#x27;SMA_Slow&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=<span class="number">200</span>).mean()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 信號: 1 (持有), 0 (空手)</span></span><br><span class="line"><span class="comment"># 注意：這裡使用 shift(1) 是為了避免前視偏差！</span></span><br><span class="line"><span class="comment"># 今天的信號是基於昨天的收盤價計算出來的，所以只能明天執行</span></span><br><span class="line">df[<span class="string">&#x27;Signal&#x27;</span>] = np.where(df[<span class="string">&#x27;SMA_Fast&#x27;</span>] &gt; df[<span class="string">&#x27;SMA_Slow&#x27;</span>], <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;Position&#x27;</span>] = df[<span class="string">&#x27;Signal&#x27;</span>].shift(<span class="number">1</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 計算回報 (Return Calculation)</span></span><br><span class="line"><span class="comment"># 市場日報酬率 (log return 通常更適合累加，但簡單起見用 pct_change)</span></span><br><span class="line">df[<span class="string">&#x27;Market_Ret&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].pct_change()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 策略日報酬率 = 持倉狀態 * 市場日報酬率</span></span><br><span class="line">df[<span class="string">&#x27;Strategy_Ret&#x27;</span>] = df[<span class="string">&#x27;Position&#x27;</span>] * df[<span class="string">&#x27;Market_Ret&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 計算累積回報 (Cumulative Return)</span></span><br><span class="line"><span class="comment"># (1 + r).cumprod()</span></span><br><span class="line">df[<span class="string">&#x27;Cum_Market&#x27;</span>] = (<span class="number">1</span> + df[<span class="string">&#x27;Market_Ret&#x27;</span>]).cumprod()</span><br><span class="line">df[<span class="string">&#x27;Cum_Strategy&#x27;</span>] = (<span class="number">1</span> + df[<span class="string">&#x27;Strategy_Ret&#x27;</span>]).cumprod()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 結果視覺化</span></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">6</span>))</span><br><span class="line">df[<span class="string">&#x27;Cum_Market&#x27;</span>].plot(label=<span class="string">&#x27;Buy &amp; Hold (SPY)&#x27;</span>)</span><br><span class="line">df[<span class="string">&#x27;Cum_Strategy&#x27;</span>].plot(label=<span class="string">&#x27;SMA Strategy&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Vectorized Backtest: SMA Crossover&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6. 直接比較最終倍數</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Market Return: <span class="subst">&#123;df[<span class="string">&#x27;Cum_Market&#x27;</span>].iloc[-<span class="number">1</span>]:<span class="number">.2</span>f&#125;</span>x&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Strategy Return: <span class="subst">&#123;df[<span class="string">&#x27;Cum_Strategy&#x27;</span>].iloc[-<span class="number">1</span>]:<span class="number">.2</span>f&#125;</span>x&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="關鍵點解析"><a href="#關鍵點解析" class="headerlink" title="關鍵點解析"></a>關鍵點解析</h2><ul>
+<li><code>shift(1)</code>: 這是最重要的一步。如果你的訊號是基於今日收盤價 (<code>Close</code>) 產生的，你無法在今日收盤前買入（除非你用開盤價回測）。通常假設「今日收盤產生訊號 -&gt; 明日開盤買入」，所以持倉 (<code>Position</code>) 要延後一天。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/07_Vectorized_Backtesting/" data-id="cuidUDDuTDQW7WuT6o8ThYuQS" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-05_First_Strategy_SMA" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/05_First_Strategy_SMA/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.298Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📈-05-第一個策略：雙均線策略-SMA-Crossover"><a href="#📈-05-第一個策略：雙均線策略-SMA-Crossover" class="headerlink" title="📈 05. 第一個策略：雙均線策略 (SMA Crossover)"></a>📈 05. 第一個策略：雙均線策略 (SMA Crossover)</h1><h2 id="策略邏輯"><a href="#策略邏輯" class="headerlink" title="策略邏輯"></a>策略邏輯</h2><ul>
+<li><strong>黃金交叉 (Golden Cross)</strong>: 短期均線 (SMA_Short) <strong>向上突破</strong> 長期均線 (SMA_Long) -&gt; <strong>買入訊號</strong>。</li>
+<li><strong>死亡交叉 (Death Cross)</strong>: 短期均線 <strong>向下跌破</strong> 長期均線 -&gt; <strong>賣出訊號</strong>。</li>
+</ul>
+<h2 id="Python-實作"><a href="#Python-實作" class="headerlink" title="Python 實作"></a>Python 實作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 獲取數據</span></span><br><span class="line">df = yf.download(<span class="string">&#x27;BTC-USD&#x27;</span>, start=<span class="string">&#x27;2020-01-01&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 計算指標</span></span><br><span class="line">short_window = <span class="number">50</span></span><br><span class="line">long_window = <span class="number">200</span></span><br><span class="line"></span><br><span class="line">df[<span class="string">&#x27;SMA_50&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=short_window).mean()</span><br><span class="line">df[<span class="string">&#x27;SMA_200&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=long_window).mean()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 產生訊號</span></span><br><span class="line"><span class="comment"># 創建一個新的 Signal 欄位，初始化為 0</span></span><br><span class="line">df[<span class="string">&#x27;Signal&#x27;</span>] = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 當 SMA_50 &gt; SMA_200 時標記為 1 (持有/看多)</span></span><br><span class="line"><span class="comment"># 從第 200 天開始切片，因為前面沒有足夠數據計算 SMA_200</span></span><br><span class="line">df.iloc[long_window:, df.columns.get_loc(<span class="string">&#x27;Signal&#x27;</span>)] = \</span><br><span class="line">    np.where(df[<span class="string">&#x27;SMA_50&#x27;</span>][long_window:] &gt; df[<span class="string">&#x27;SMA_200&#x27;</span>][long_window:], <span class="number">1.0</span>, <span class="number">0.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 計算買賣點 (Position 用 diff 計算：1-0=1 買入, 0-1=-1 賣出)</span></span><br><span class="line">df[<span class="string">&#x27;Position&#x27;</span>] = df[<span class="string">&#x27;Signal&#x27;</span>].diff()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 簡單回測與視覺化</span></span><br><span class="line">plt.figure(figsize=(<span class="number">14</span>, <span class="number">7</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 畫價格</span></span><br><span class="line">plt.plot(df[<span class="string">&#x27;Close&#x27;</span>], label=<span class="string">&#x27;Close Price&#x27;</span>, alpha=<span class="number">0.5</span>)</span><br><span class="line"><span class="comment"># 畫均線</span></span><br><span class="line">plt.plot(df[<span class="string">&#x27;SMA_50&#x27;</span>], label=<span class="string">&#x27;SMA 50&#x27;</span>, alpha=<span class="number">0.7</span>)</span><br><span class="line">plt.plot(df[<span class="string">&#x27;SMA_200&#x27;</span>], label=<span class="string">&#x27;SMA 200&#x27;</span>, alpha=<span class="number">0.7</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 標記買入點 (綠色上三角形)</span></span><br><span class="line">plt.plot(df[df[<span class="string">&#x27;Position&#x27;</span>] == <span class="number">1</span>].index, </span><br><span class="line">         df[<span class="string">&#x27;SMA_50&#x27;</span>][df[<span class="string">&#x27;Position&#x27;</span>] == <span class="number">1</span>], </span><br><span class="line">         <span class="string">&#x27;^&#x27;</span>, markersize=<span class="number">10</span>, color=<span class="string">&#x27;g&#x27;</span>, label=<span class="string">&#x27;Buy Signal&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 標記賣出點 (紅色下三角形)</span></span><br><span class="line">plt.plot(df[df[<span class="string">&#x27;Position&#x27;</span>] == -<span class="number">1</span>].index, </span><br><span class="line">         df[<span class="string">&#x27;SMA_50&#x27;</span>][df[<span class="string">&#x27;Position&#x27;</span>] == -<span class="number">1</span>], </span><br><span class="line">         <span class="string">&#x27;v&#x27;</span>, markersize=<span class="number">10</span>, color=<span class="string">&#x27;r&#x27;</span>, label=<span class="string">&#x27;Sell Signal&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">&#x27;Bitcoin SMA Crossover Strategy&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事項"><a href="#注意事項" class="headerlink" title="注意事項"></a>注意事項</h2><ul>
+<li>這只是最基礎的策略，未考慮手續費與滑點。</li>
+<li>趨勢策略在盤整市場 (Range-bound market) 表現通常不佳。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/05_First_Strategy_SMA/" data-id="cuidxtibDOSo6Bz2w9nCUg8qX" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/sma/" rel="tag">sma</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/strategy/" rel="tag">strategy</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-06_Backtesting_Basics" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/06_Backtesting_Basics/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.298Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="🧪-06-回測基礎導論-Backtesting-Basics"><a href="#🧪-06-回測基礎導論-Backtesting-Basics" class="headerlink" title="🧪 06. 回測基礎導論 (Backtesting Basics)"></a>🧪 06. 回測基礎導論 (Backtesting Basics)</h1><h2 id="什麼是回測？"><a href="#什麼是回測？" class="headerlink" title="什麼是回測？"></a>什麼是回測？</h2><p>回測是指使用<strong>歷史數據</strong>來模擬策略的表現，以評估其在未來的潛在獲利能力。</p>
+<blockquote>
+<p><strong>核心假設</strong>：歷史會在某種程度上重演 (History tends to repeat itself)。</p>
+</blockquote>
+<h2 id="回測的兩種類型"><a href="#回測的兩種類型" class="headerlink" title="回測的兩種類型"></a>回測的兩種類型</h2><h3 id="1-向量化回測-Vectorized-Backtesting"><a href="#1-向量化回測-Vectorized-Backtesting" class="headerlink" title="1. 向量化回測 (Vectorized Backtesting)"></a>1. 向量化回測 (Vectorized Backtesting)</h3><ul>
+<li><strong>原理</strong>: 利用 Pandas 等陣列運算，一次性計算所有時間點的信號與損益。</li>
+<li><strong>優點</strong>: 速度極快，程式碼簡潔，適合初步篩選策略。</li>
+<li><strong>缺點</strong>: 很難模擬複雜的交易機制（如滑點、部分成交、動態止損）。</li>
+<li><strong>適用</strong>: 研究階段 (Research Phase)。</li>
+</ul>
+<h3 id="2-事件驅動回測-Event-Driven-Backtesting"><a href="#2-事件驅動回測-Event-Driven-Backtesting" class="headerlink" title="2. 事件驅動回測 (Event-Driven Backtesting)"></a>2. 事件驅動回測 (Event-Driven Backtesting)</h3><ul>
+<li><strong>原理</strong>: 模擬真實市場的時間流，逐筆 (Tick-by-tick) 或逐根 K 線 (Bar-by-bar) 處理事件 (Market Event -&gt; Signal Event -&gt; Order Event -&gt; Fill Event)。</li>
+<li><strong>優點</strong>: 極度擬真，可考慮流動性、滑點、延遲。</li>
+<li><strong>缺點</strong>: 開發複雜，運算速度較慢。</li>
+<li><strong>適用</strong>: 實盤前驗證 (Pre-deployment Validation)。</li>
+</ul>
+<h2 id="常見陷阱-Pitfalls"><a href="#常見陷阱-Pitfalls" class="headerlink" title="常見陷阱 (Pitfalls)"></a>常見陷阱 (Pitfalls)</h2><h3 id="1-前視偏差-Look-ahead-Bias"><a href="#1-前視偏差-Look-ahead-Bias" class="headerlink" title="1. 前視偏差 (Look-ahead Bias)"></a>1. 前視偏差 (Look-ahead Bias)</h3><p><strong>定義</strong>: 在計算 $t$ 時刻的信號時，用到了 $t+1$ 時刻或未來的數據。<br><strong>例子</strong>: 使用當天的「收盤價」來決定當天的「開盤買入」。(不可能做到)<br><strong>解法</strong>: 永遠只用 $t-1$ 的收盤數據來決定 $t$ 時刻的動作，或者確保交易發生在信號產生之後。</p>
+<h3 id="2-過度擬合-Overfitting"><a href="#2-過度擬合-Overfitting" class="headerlink" title="2. 過度擬合 (Overfitting)"></a>2. 過度擬合 (Overfitting)</h3><p><strong>定義</strong>: 策略對歷史數據優化過度，導致在樣本外 (Out-of-Sample) 表現極差。常被稱為 “Curve Fitting”。<br><strong>徵兆</strong>: 參數稍微調整（例如 MA 從 20 改為 21），績效就崩盤。<br><strong>解法</strong>: 減少參數數量、使用訓練集&#x2F;測試集 (In-Sample&#x2F;Out-of-Sample) 驗證。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/06_Backtesting_Basics/" data-id="cuidhGT0QTqij6J2MY8teJl2M" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/theory/" rel="tag">theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-04_Visualization" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/04_Visualization/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.297Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📊-04-數據視覺化：Matplotlib-與-mplfinance"><a href="#📊-04-數據視覺化：Matplotlib-與-mplfinance" class="headerlink" title="📊 04. 數據視覺化：Matplotlib 與 mplfinance"></a>📊 04. 數據視覺化：Matplotlib 與 mplfinance</h1><h2 id="1-Matplotlib-基礎繪圖"><a href="#1-Matplotlib-基礎繪圖" class="headerlink" title="1. Matplotlib 基礎繪圖"></a>1. Matplotlib 基礎繪圖</h2><p>最基礎的折線圖，適合畫收盤價。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"></span><br><span class="line">df = yf.download(<span class="string">&#x27;TSLA&#x27;</span>, start=<span class="string">&#x27;2023-01-01&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">12</span>, <span class="number">6</span>))</span><br><span class="line">plt.plot(df.index, df[<span class="string">&#x27;Close&#x27;</span>], label=<span class="string">&#x27;Tesla Close Price&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Tesla Stock Price&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;Date&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;Price&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.show() <span class="comment"># 在 Jupyter 中顯示</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-繪製專業-K-線圖-Candlestick-Chart"><a href="#2-繪製專業-K-線圖-Candlestick-Chart" class="headerlink" title="2. 繪製專業 K 線圖 (Candlestick Chart)"></a>2. 繪製專業 K 線圖 (Candlestick Chart)</h2><p>使用 <code>mplfinance</code> 套件，這是最簡單的方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mplfinance <span class="keyword">as</span> mpf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 畫最近 50 天的 K 線，並疊加 10日與20日均線</span></span><br><span class="line"><span class="comment"># type=&#x27;candle&#x27;: 蠟燭圖</span></span><br><span class="line"><span class="comment"># mav=(10, 20): 移動平均線</span></span><br><span class="line"><span class="comment"># volume=True: 顯示成交量</span></span><br><span class="line">mpf.plot(df[-<span class="number">50</span>:], <span class="built_in">type</span>=<span class="string">&#x27;candle&#x27;</span>, mav=(<span class="number">10</span>, <span class="number">20</span>), volume=<span class="literal">True</span>, style=<span class="string">&#x27;charles&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-視覺化的重要性"><a href="#3-視覺化的重要性" class="headerlink" title="3. 視覺化的重要性"></a>3. 視覺化的重要性</h2><ul>
+<li><strong>確認數據品質</strong>: 有無異常的高價或低價？</li>
+<li><strong>觀察趨勢</strong>: 肉眼識別支撐與壓力位。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/04_Visualization/" data-id="cuidVvtgS0mJTqLUkSMa9afqZ" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-03_Data_Acquisition" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/03_Data_Acquisition/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.297Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📥-03-數據獲取：使用-yfinance"><a href="#📥-03-數據獲取：使用-yfinance" class="headerlink" title="📥 03. 數據獲取：使用 yfinance"></a>📥 03. 數據獲取：使用 yfinance</h1><h2 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h2><p><code>yfinance</code> 是一個開源庫，可以免費下載 Yahoo Finance 的歷史數據。</p>
+<h2 id="1-下載個股歷史數據"><a href="#1-下載個股歷史數據" class="headerlink" title="1. 下載個股歷史數據"></a>1. 下載個股歷史數據</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下載 Apple (AAPL) 數據</span></span><br><span class="line"><span class="comment"># start: 開始日期, end: 結束日期</span></span><br><span class="line">df = yf.download(<span class="string">&#x27;AAPL&#x27;</span>, start=<span class="string">&#x27;2020-01-01&#x27;</span>, end=<span class="string">&#x27;2024-01-01&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看前 5 行</span></span><br><span class="line"><span class="built_in">print</span>(df.head())</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-下載多檔股票"><a href="#2-下載多檔股票" class="headerlink" title="2. 下載多檔股票"></a>2. 下載多檔股票</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tickers = [<span class="string">&#x27;AAPL&#x27;</span>, <span class="string">&#x27;MSFT&#x27;</span>, <span class="string">&#x27;GOOG&#x27;</span>]</span><br><span class="line">data = yf.download(tickers, start=<span class="string">&#x27;2023-01-01&#x27;</span>)[<span class="string">&#x27;Close&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(data.head())</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-下載分鐘級數據-限制由-Yahoo-決定"><a href="#3-下載分鐘級數據-限制由-Yahoo-決定" class="headerlink" title="3. 下載分鐘級數據 (限制由 Yahoo 決定)"></a>3. 下載分鐘級數據 (限制由 Yahoo 決定)</h2><p>通常最近 30-60 天可以下載到分鐘級數據。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># interval: 數據頻率 (1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo)</span></span><br><span class="line">df_idx = yf.download(<span class="string">&#x27;SPY&#x27;</span>, period=<span class="string">&#x27;7d&#x27;</span>, interval=<span class="string">&#x27;1m&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="常見問題"><a href="#常見問題" class="headerlink" title="常見問題"></a>常見問題</h2><ul>
+<li><strong>Adjusted Close (Adj Close)</strong>: 經除權息調整後的收盤價，計算回報率時建議使用此欄位。</li>
+<li><strong>缺失值</strong>: 遇到國定假日可能會沒有數據，可用 <code>df.dropna()</code> 處理。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/03_Data_Acquisition/" data-id="cuid6r_uUIaTR3skFo25dtfUA" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-02_Pandas_Basics" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/02_Pandas_Basics/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.295Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="🐼-02-Pandas-基礎：處理時間序列數據"><a href="#🐼-02-Pandas-基礎：處理時間序列數據" class="headerlink" title="🐼 02. Pandas 基礎：處理時間序列數據"></a>🐼 02. Pandas 基礎：處理時間序列數據</h1><h2 id="核心概念：DataFrame"><a href="#核心概念：DataFrame" class="headerlink" title="核心概念：DataFrame"></a>核心概念：DataFrame</h2><p>Pandas 的核心是 <code>DataFrame</code>，你可以把它想像成一個增強版的 Excel 表格。</p>
+<p>對於金融數據，我們通常將 <strong>日期 (Date)</strong> 設為索引 (Index)。</p>
+<h2 id="1-建立簡單的-DataFrame"><a href="#1-建立簡單的-DataFrame" class="headerlink" title="1. 建立簡單的 DataFrame"></a>1. 建立簡單的 DataFrame</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;Close&#x27;</span>: [<span class="number">100</span>, <span class="number">102</span>, <span class="number">101</span>, <span class="number">105</span>],</span><br><span class="line">    <span class="string">&#x27;Volume&#x27;</span>: [<span class="number">1000</span>, <span class="number">1200</span>, <span class="number">900</span>, <span class="number">1500</span>]</span><br><span class="line">&#125;</span><br><span class="line">dates = pd.date_range(start=<span class="string">&#x27;2024-01-01&#x27;</span>, periods=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">df = pd.DataFrame(data, index=dates)</span><br><span class="line"><span class="built_in">print</span>(df)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-選擇數據-Indexing-Slicing"><a href="#2-選擇數據-Indexing-Slicing" class="headerlink" title="2. 選擇數據 (Indexing &amp; Slicing)"></a>2. 選擇數據 (Indexing &amp; Slicing)</h2><ul>
+<li><strong>選擇單列</strong>: <code>df[&#39;Close&#39;]</code></li>
+<li><strong>使用標籤選擇 (.loc)</strong>: <code>df.loc[&#39;2024-01-01&#39;]</code></li>
+<li><strong>使用位置選擇 (.iloc)</strong>: <code>df.iloc[0]</code> (第一行)</li>
+</ul>
+<h2 id="3-處理時間序列-Resampling"><a href="#3-處理時間序列-Resampling" class="headerlink" title="3. 處理時間序列 (Resampling)"></a>3. 處理時間序列 (Resampling)</h2><p>將 1 分鐘 K 線轉為 5 分鐘 K 線。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假設 df 是分鐘級數據</span></span><br><span class="line"><span class="comment"># &#x27;5T&#x27; 代表 5 分鐘 (T = Minute)</span></span><br><span class="line"><span class="comment"># OHLC 聚合邏輯：Open取第一個, High取最大, Low取最小, Close取最後</span></span><br><span class="line">ohlc_dict = &#123;</span><br><span class="line">    <span class="string">&#x27;Open&#x27;</span>: <span class="string">&#x27;first&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;High&#x27;</span>: <span class="string">&#x27;max&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Low&#x27;</span>: <span class="string">&#x27;min&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Close&#x27;</span>: <span class="string">&#x27;last&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Volume&#x27;</span>: <span class="string">&#x27;sum&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">df_5m = df.resample(<span class="string">&#x27;5T&#x27;</span>).agg(ohlc_dict)</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-移動視窗-Rolling-Window"><a href="#4-移動視窗-Rolling-Window" class="headerlink" title="4. 移動視窗 (Rolling Window)"></a>4. 移動視窗 (Rolling Window)</h2><p>計算移動平均線 (MA) 的基礎。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 計算 20 日移動平均</span></span><br><span class="line">df[<span class="string">&#x27;SMA_20&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=<span class="number">20</span>).mean()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/02_Pandas_Basics/" data-id="cuidrrFsOocdmA1NS1iDrr30_" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-01_Python_Environment_Setup" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/01_Python_Environment_Setup/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.294Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="🐍-01-Python-環境建置與基礎套件"><a href="#🐍-01-Python-環境建置與基礎套件" class="headerlink" title="🐍 01. Python 環境建置與基礎套件"></a>🐍 01. Python 環境建置與基礎套件</h1><h2 id="為什麼選擇-Python？"><a href="#為什麼選擇-Python？" class="headerlink" title="為什麼選擇 Python？"></a>為什麼選擇 Python？</h2><p>Python 擁有豐富的數據分析與金融庫（Libraries），是自動化交易的首選語言。</p>
+<h2 id="1-安裝-Python-推薦-Anaconda-Miniconda"><a href="#1-安裝-Python-推薦-Anaconda-Miniconda" class="headerlink" title="1. 安裝 Python (推薦 Anaconda&#x2F;Miniconda)"></a>1. 安裝 Python (推薦 Anaconda&#x2F;Miniconda)</h2><p>建議使用 <strong>Miniconda</strong> 以保持環境輕量。</p>
+<ul>
+<li>下載地址: <a target="_blank" rel="noopener" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a></li>
+</ul>
+<h2 id="2-建立虛擬環境-Virtual-Environment"><a href="#2-建立虛擬環境-Virtual-Environment" class="headerlink" title="2. 建立虛擬環境 (Virtual Environment)"></a>2. 建立虛擬環境 (Virtual Environment)</h2><p>避免不同專案間的套件衝突。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建立名為 trading 的環境，指定 Python 3.10</span></span><br><span class="line">conda create -n trading python=3.10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 啟用環境</span></span><br><span class="line">conda activate trading</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-安裝核心套件"><a href="#3-安裝核心套件" class="headerlink" title="3. 安裝核心套件"></a>3. 安裝核心套件</h2><p>自動化交易的 “三劍客” + 數據源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pandas numpy matplotlib yfinance mplfinance jupyterlab</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>pandas</strong>: 處理表格數據 (DataFrame)，金融數據分析的核心。</li>
+<li><strong>numpy</strong>: 數值計算。</li>
+<li><strong>matplotlib &#x2F; mplfinance</strong>: 繪圖與視覺化。</li>
+<li><strong>yfinance</strong>: 下載 Yahoo Finance 歷史股價數據。</li>
+<li><strong>jupyterlab</strong>: 交互式開發環境，適合研究策略。</li>
+</ul>
+<h2 id="4-測試安裝"><a href="#4-測試安裝" class="headerlink" title="4. 測試安裝"></a>4. 測試安裝</h2><p>打開終端機輸入 <code>python</code>，然後嘗試匯入：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Setup Complete!&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/01_Python_Environment_Setup/" data-id="cuidYmT2WV9zHzQvm2Dym5rIs" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/setup/" rel="tag">setup</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/metrics/" rel="tag">metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/setup/" rel="tag">setup</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/sma/" rel="tag">sma</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/strategy/" rel="tag">strategy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/theory/" rel="tag">theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/investment/tags/api/" style="font-size: 10px;">api</a> <a href="/investment/tags/backtesting/" style="font-size: 16.67px;">backtesting</a> <a href="/investment/tags/data/" style="font-size: 13.33px;">data</a> <a href="/investment/tags/investment/" style="font-size: 13.33px;">investment</a> <a href="/investment/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/investment/tags/metrics/" style="font-size: 10px;">metrics</a> <a href="/investment/tags/pandas/" style="font-size: 13.33px;">pandas</a> <a href="/investment/tags/python/" style="font-size: 20px;">python</a> <a href="/investment/tags/setup/" style="font-size: 10px;">setup</a> <a href="/investment/tags/sma/" style="font-size: 10px;">sma</a> <a href="/investment/tags/strategy/" style="font-size: 10px;">strategy</a> <a href="/investment/tags/theory/" style="font-size: 10px;">theory</a> <a href="/investment/tags/visualization/" style="font-size: 10px;">visualization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/investment/archives/2025/12/">十二月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/investment/2025/12/29/08_Backtesting_Metrics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/07_Vectorized_Backtesting/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/05_First_Strategy_SMA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/06_Backtesting_Basics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/04_Visualization/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Kyle<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/investment/" class="mobile-nav-link">Home</a>
+  
+    <a href="/investment/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/investment/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/investment/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/investment/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

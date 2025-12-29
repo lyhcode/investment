@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Stock Automation Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🚀 07. 向量化回測實作 (Vectorized Backtesting)本篇展示如何使用 Pandas 進行快速的向量化回測。 範例：雙均線策略回測123456789101112131415161718192021222324252627282930313233343536373839404142import pandas as pdimport yfinance as yfimport m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stock Automation Notes">
+<meta property="og:url" content="https://lyhcode.github.io/investment/2025/12/29/07_Vectorized_Backtesting/index.html">
+<meta property="og:site_name" content="Stock Automation Notes">
+<meta property="og:description" content="🚀 07. 向量化回測實作 (Vectorized Backtesting)本篇展示如何使用 Pandas 進行快速的向量化回測。 範例：雙均線策略回測123456789101112131415161718192021222324252627282930313233343536373839404142import pandas as pdimport yfinance as yfimport m">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2025-12-29T13:01:16.299Z">
+<meta property="article:modified_time" content="2025-12-29T13:01:16.299Z">
+<meta property="article:author" content="Kyle">
+<meta property="article:tag" content="backtesting">
+<meta property="article:tag" content="pandas">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/investment/atom.xml" title="Stock Automation Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/investment/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/investment/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/investment/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/investment/" id="logo">Stock Automation Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/investment/" id="subtitle">Learning Process</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/investment/">Home</a>
+        
+          <a class="main-nav-link" href="/investment/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/investment/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜尋"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜尋"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://lyhcode.github.io/investment"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-07_Vectorized_Backtesting" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/07_Vectorized_Backtesting/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.299Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="🚀-07-向量化回測實作-Vectorized-Backtesting"><a href="#🚀-07-向量化回測實作-Vectorized-Backtesting" class="headerlink" title="🚀 07. 向量化回測實作 (Vectorized Backtesting)"></a>🚀 07. 向量化回測實作 (Vectorized Backtesting)</h1><p>本篇展示如何使用 Pandas 進行快速的向量化回測。</p>
+<h2 id="範例：雙均線策略回測"><a href="#範例：雙均線策略回測" class="headerlink" title="範例：雙均線策略回測"></a>範例：雙均線策略回測</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 準備數據</span></span><br><span class="line">df = yf.download(<span class="string">&#x27;SPY&#x27;</span>, start=<span class="string">&#x27;2015-01-01&#x27;</span>, end=<span class="string">&#x27;2023-01-01&#x27;</span>)</span><br><span class="line">df = df[[<span class="string">&#x27;Close&#x27;</span>]].copy()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 策略邏輯 (Signal Generation)</span></span><br><span class="line">df[<span class="string">&#x27;SMA_Fast&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=<span class="number">50</span>).mean()</span><br><span class="line">df[<span class="string">&#x27;SMA_Slow&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].rolling(window=<span class="number">200</span>).mean()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 信號: 1 (持有), 0 (空手)</span></span><br><span class="line"><span class="comment"># 注意：這裡使用 shift(1) 是為了避免前視偏差！</span></span><br><span class="line"><span class="comment"># 今天的信號是基於昨天的收盤價計算出來的，所以只能明天執行</span></span><br><span class="line">df[<span class="string">&#x27;Signal&#x27;</span>] = np.where(df[<span class="string">&#x27;SMA_Fast&#x27;</span>] &gt; df[<span class="string">&#x27;SMA_Slow&#x27;</span>], <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">df[<span class="string">&#x27;Position&#x27;</span>] = df[<span class="string">&#x27;Signal&#x27;</span>].shift(<span class="number">1</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 計算回報 (Return Calculation)</span></span><br><span class="line"><span class="comment"># 市場日報酬率 (log return 通常更適合累加，但簡單起見用 pct_change)</span></span><br><span class="line">df[<span class="string">&#x27;Market_Ret&#x27;</span>] = df[<span class="string">&#x27;Close&#x27;</span>].pct_change()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 策略日報酬率 = 持倉狀態 * 市場日報酬率</span></span><br><span class="line">df[<span class="string">&#x27;Strategy_Ret&#x27;</span>] = df[<span class="string">&#x27;Position&#x27;</span>] * df[<span class="string">&#x27;Market_Ret&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 計算累積回報 (Cumulative Return)</span></span><br><span class="line"><span class="comment"># (1 + r).cumprod()</span></span><br><span class="line">df[<span class="string">&#x27;Cum_Market&#x27;</span>] = (<span class="number">1</span> + df[<span class="string">&#x27;Market_Ret&#x27;</span>]).cumprod()</span><br><span class="line">df[<span class="string">&#x27;Cum_Strategy&#x27;</span>] = (<span class="number">1</span> + df[<span class="string">&#x27;Strategy_Ret&#x27;</span>]).cumprod()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. 結果視覺化</span></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">6</span>))</span><br><span class="line">df[<span class="string">&#x27;Cum_Market&#x27;</span>].plot(label=<span class="string">&#x27;Buy &amp; Hold (SPY)&#x27;</span>)</span><br><span class="line">df[<span class="string">&#x27;Cum_Strategy&#x27;</span>].plot(label=<span class="string">&#x27;SMA Strategy&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Vectorized Backtest: SMA Crossover&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6. 直接比較最終倍數</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Market Return: <span class="subst">&#123;df[<span class="string">&#x27;Cum_Market&#x27;</span>].iloc[-<span class="number">1</span>]:<span class="number">.2</span>f&#125;</span>x&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Strategy Return: <span class="subst">&#123;df[<span class="string">&#x27;Cum_Strategy&#x27;</span>].iloc[-<span class="number">1</span>]:<span class="number">.2</span>f&#125;</span>x&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="關鍵點解析"><a href="#關鍵點解析" class="headerlink" title="關鍵點解析"></a>關鍵點解析</h2><ul>
+<li><code>shift(1)</code>: 這是最重要的一步。如果你的訊號是基於今日收盤價 (<code>Close</code>) 產生的，你無法在今日收盤前買入（除非你用開盤價回測）。通常假設「今日收盤產生訊號 -&gt; 明日開盤買入」，所以持倉 (<code>Position</code>) 要延後一天。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/07_Vectorized_Backtesting/" data-id="cuidUDDuTDQW7WuT6o8ThYuQS" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/investment/2025/12/29/08_Backtesting_Metrics/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/investment/2025/12/29/05_First_Strategy_SMA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/metrics/" rel="tag">metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/setup/" rel="tag">setup</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/sma/" rel="tag">sma</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/strategy/" rel="tag">strategy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/theory/" rel="tag">theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/investment/tags/api/" style="font-size: 10px;">api</a> <a href="/investment/tags/backtesting/" style="font-size: 16.67px;">backtesting</a> <a href="/investment/tags/data/" style="font-size: 13.33px;">data</a> <a href="/investment/tags/investment/" style="font-size: 13.33px;">investment</a> <a href="/investment/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/investment/tags/metrics/" style="font-size: 10px;">metrics</a> <a href="/investment/tags/pandas/" style="font-size: 13.33px;">pandas</a> <a href="/investment/tags/python/" style="font-size: 20px;">python</a> <a href="/investment/tags/setup/" style="font-size: 10px;">setup</a> <a href="/investment/tags/sma/" style="font-size: 10px;">sma</a> <a href="/investment/tags/strategy/" style="font-size: 10px;">strategy</a> <a href="/investment/tags/theory/" style="font-size: 10px;">theory</a> <a href="/investment/tags/visualization/" style="font-size: 10px;">visualization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/investment/archives/2025/12/">十二月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/investment/2025/12/29/08_Backtesting_Metrics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/07_Vectorized_Backtesting/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/05_First_Strategy_SMA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/06_Backtesting_Basics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/04_Visualization/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Kyle<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/investment/" class="mobile-nav-link">Home</a>
+  
+    <a href="/investment/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/investment/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/investment/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/investment/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

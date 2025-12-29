@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Stock Automation Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="📥 03. 數據獲取：使用 yfinance簡介yfinance 是一個開源庫，可以免費下載 Yahoo Finance 的歷史數據。 1. 下載個股歷史數據12345678import yfinance as yf# 下載 Apple (AAPL) 數據# start: 開始日期, end: 結束日期df &#x3D; yf.download(&#x27;AAPL&#x27;, start&#x3D;&#x27;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stock Automation Notes">
+<meta property="og:url" content="https://lyhcode.github.io/investment/2025/12/29/03_Data_Acquisition/index.html">
+<meta property="og:site_name" content="Stock Automation Notes">
+<meta property="og:description" content="📥 03. 數據獲取：使用 yfinance簡介yfinance 是一個開源庫，可以免費下載 Yahoo Finance 的歷史數據。 1. 下載個股歷史數據12345678import yfinance as yf# 下載 Apple (AAPL) 數據# start: 開始日期, end: 結束日期df &#x3D; yf.download(&#x27;AAPL&#x27;, start&#x3D;&#x27;">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2025-12-29T13:01:16.297Z">
+<meta property="article:modified_time" content="2025-12-29T13:01:16.297Z">
+<meta property="article:author" content="Kyle">
+<meta property="article:tag" content="api">
+<meta property="article:tag" content="data">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/investment/atom.xml" title="Stock Automation Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/investment/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/investment/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/investment/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/investment/" id="logo">Stock Automation Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/investment/" id="subtitle">Learning Process</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/investment/">Home</a>
+        
+          <a class="main-nav-link" href="/investment/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/investment/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜尋"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜尋"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://lyhcode.github.io/investment"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-03_Data_Acquisition" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/03_Data_Acquisition/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.297Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📥-03-數據獲取：使用-yfinance"><a href="#📥-03-數據獲取：使用-yfinance" class="headerlink" title="📥 03. 數據獲取：使用 yfinance"></a>📥 03. 數據獲取：使用 yfinance</h1><h2 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h2><p><code>yfinance</code> 是一個開源庫，可以免費下載 Yahoo Finance 的歷史數據。</p>
+<h2 id="1-下載個股歷史數據"><a href="#1-下載個股歷史數據" class="headerlink" title="1. 下載個股歷史數據"></a>1. 下載個股歷史數據</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下載 Apple (AAPL) 數據</span></span><br><span class="line"><span class="comment"># start: 開始日期, end: 結束日期</span></span><br><span class="line">df = yf.download(<span class="string">&#x27;AAPL&#x27;</span>, start=<span class="string">&#x27;2020-01-01&#x27;</span>, end=<span class="string">&#x27;2024-01-01&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看前 5 行</span></span><br><span class="line"><span class="built_in">print</span>(df.head())</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-下載多檔股票"><a href="#2-下載多檔股票" class="headerlink" title="2. 下載多檔股票"></a>2. 下載多檔股票</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tickers = [<span class="string">&#x27;AAPL&#x27;</span>, <span class="string">&#x27;MSFT&#x27;</span>, <span class="string">&#x27;GOOG&#x27;</span>]</span><br><span class="line">data = yf.download(tickers, start=<span class="string">&#x27;2023-01-01&#x27;</span>)[<span class="string">&#x27;Close&#x27;</span>]</span><br><span class="line"><span class="built_in">print</span>(data.head())</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-下載分鐘級數據-限制由-Yahoo-決定"><a href="#3-下載分鐘級數據-限制由-Yahoo-決定" class="headerlink" title="3. 下載分鐘級數據 (限制由 Yahoo 決定)"></a>3. 下載分鐘級數據 (限制由 Yahoo 決定)</h2><p>通常最近 30-60 天可以下載到分鐘級數據。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># interval: 數據頻率 (1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo)</span></span><br><span class="line">df_idx = yf.download(<span class="string">&#x27;SPY&#x27;</span>, period=<span class="string">&#x27;7d&#x27;</span>, interval=<span class="string">&#x27;1m&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="常見問題"><a href="#常見問題" class="headerlink" title="常見問題"></a>常見問題</h2><ul>
+<li><strong>Adjusted Close (Adj Close)</strong>: 經除權息調整後的收盤價，計算回報率時建議使用此欄位。</li>
+<li><strong>缺失值</strong>: 遇到國定假日可能會沒有數據，可用 <code>df.dropna()</code> 處理。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/03_Data_Acquisition/" data-id="cuid6r_uUIaTR3skFo25dtfUA" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/investment/2025/12/29/04_Visualization/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/investment/2025/12/29/02_Pandas_Basics/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/metrics/" rel="tag">metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/setup/" rel="tag">setup</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/sma/" rel="tag">sma</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/strategy/" rel="tag">strategy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/theory/" rel="tag">theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/investment/tags/api/" style="font-size: 10px;">api</a> <a href="/investment/tags/backtesting/" style="font-size: 16.67px;">backtesting</a> <a href="/investment/tags/data/" style="font-size: 13.33px;">data</a> <a href="/investment/tags/investment/" style="font-size: 13.33px;">investment</a> <a href="/investment/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/investment/tags/metrics/" style="font-size: 10px;">metrics</a> <a href="/investment/tags/pandas/" style="font-size: 13.33px;">pandas</a> <a href="/investment/tags/python/" style="font-size: 20px;">python</a> <a href="/investment/tags/setup/" style="font-size: 10px;">setup</a> <a href="/investment/tags/sma/" style="font-size: 10px;">sma</a> <a href="/investment/tags/strategy/" style="font-size: 10px;">strategy</a> <a href="/investment/tags/theory/" style="font-size: 10px;">theory</a> <a href="/investment/tags/visualization/" style="font-size: 10px;">visualization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/investment/archives/2025/12/">十二月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/investment/2025/12/29/08_Backtesting_Metrics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/07_Vectorized_Backtesting/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/05_First_Strategy_SMA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/06_Backtesting_Basics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/04_Visualization/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Kyle<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/investment/" class="mobile-nav-link">Home</a>
+  
+    <a href="/investment/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/investment/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/investment/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/investment/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

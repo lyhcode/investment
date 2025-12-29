@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Stock Automation Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="📊 04. 數據視覺化：Matplotlib 與 mplfinance1. Matplotlib 基礎繪圖最基礎的折線圖，適合畫收盤價。 12345678910111213import matplotlib.pyplot as pltimport yfinance as yfdf &#x3D; yf.download(&#x27;TSLA&#x27;, start&#x3D;&#x27;2023-01-01&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stock Automation Notes">
+<meta property="og:url" content="https://lyhcode.github.io/investment/2025/12/29/04_Visualization/index.html">
+<meta property="og:site_name" content="Stock Automation Notes">
+<meta property="og:description" content="📊 04. 數據視覺化：Matplotlib 與 mplfinance1. Matplotlib 基礎繪圖最基礎的折線圖，適合畫收盤價。 12345678910111213import matplotlib.pyplot as pltimport yfinance as yfdf &#x3D; yf.download(&#x27;TSLA&#x27;, start&#x3D;&#x27;2023-01-01&amp;#x2">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2025-12-29T13:01:16.297Z">
+<meta property="article:modified_time" content="2025-12-29T13:01:16.298Z">
+<meta property="article:author" content="Kyle">
+<meta property="article:tag" content="matplotlib">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="visualization">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/investment/atom.xml" title="Stock Automation Notes" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/investment/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/investment/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/investment/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/investment/" id="logo">Stock Automation Notes</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/investment/" id="subtitle">Learning Process</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/investment/">Home</a>
+        
+          <a class="main-nav-link" href="/investment/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/investment/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜尋"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜尋"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://lyhcode.github.io/investment"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-04_Visualization" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/investment/2025/12/29/04_Visualization/" class="article-date">
+  <time class="dt-published" datetime="2025-12-29T13:01:16.297Z" itemprop="datePublished">2025-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="📊-04-數據視覺化：Matplotlib-與-mplfinance"><a href="#📊-04-數據視覺化：Matplotlib-與-mplfinance" class="headerlink" title="📊 04. 數據視覺化：Matplotlib 與 mplfinance"></a>📊 04. 數據視覺化：Matplotlib 與 mplfinance</h1><h2 id="1-Matplotlib-基礎繪圖"><a href="#1-Matplotlib-基礎繪圖" class="headerlink" title="1. Matplotlib 基礎繪圖"></a>1. Matplotlib 基礎繪圖</h2><p>最基礎的折線圖，適合畫收盤價。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> yfinance <span class="keyword">as</span> yf</span><br><span class="line"></span><br><span class="line">df = yf.download(<span class="string">&#x27;TSLA&#x27;</span>, start=<span class="string">&#x27;2023-01-01&#x27;</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">12</span>, <span class="number">6</span>))</span><br><span class="line">plt.plot(df.index, df[<span class="string">&#x27;Close&#x27;</span>], label=<span class="string">&#x27;Tesla Close Price&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;Tesla Stock Price&#x27;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;Date&#x27;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&#x27;Price&#x27;</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.show() <span class="comment"># 在 Jupyter 中顯示</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-繪製專業-K-線圖-Candlestick-Chart"><a href="#2-繪製專業-K-線圖-Candlestick-Chart" class="headerlink" title="2. 繪製專業 K 線圖 (Candlestick Chart)"></a>2. 繪製專業 K 線圖 (Candlestick Chart)</h2><p>使用 <code>mplfinance</code> 套件，這是最簡單的方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mplfinance <span class="keyword">as</span> mpf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 畫最近 50 天的 K 線，並疊加 10日與20日均線</span></span><br><span class="line"><span class="comment"># type=&#x27;candle&#x27;: 蠟燭圖</span></span><br><span class="line"><span class="comment"># mav=(10, 20): 移動平均線</span></span><br><span class="line"><span class="comment"># volume=True: 顯示成交量</span></span><br><span class="line">mpf.plot(df[-<span class="number">50</span>:], <span class="built_in">type</span>=<span class="string">&#x27;candle&#x27;</span>, mav=(<span class="number">10</span>, <span class="number">20</span>), volume=<span class="literal">True</span>, style=<span class="string">&#x27;charles&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-視覺化的重要性"><a href="#3-視覺化的重要性" class="headerlink" title="3. 視覺化的重要性"></a>3. 視覺化的重要性</h2><ul>
+<li><strong>確認數據品質</strong>: 有無異常的高價或低價？</li>
+<li><strong>觀察趨勢</strong>: 肉眼識別支撐與壓力位。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://lyhcode.github.io/investment/2025/12/29/04_Visualization/" data-id="cuidVvtgS0mJTqLUkSMa9afqZ" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/investment/2025/12/29/06_Backtesting_Basics/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/investment/2025/12/29/03_Data_Acquisition/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/api/" rel="tag">api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/backtesting/" rel="tag">backtesting</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/data/" rel="tag">data</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/investment/" rel="tag">investment</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/matplotlib/" rel="tag">matplotlib</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/metrics/" rel="tag">metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/pandas/" rel="tag">pandas</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/setup/" rel="tag">setup</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/sma/" rel="tag">sma</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/strategy/" rel="tag">strategy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/theory/" rel="tag">theory</a></li><li class="tag-list-item"><a class="tag-list-link" href="/investment/tags/visualization/" rel="tag">visualization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">標籤雲</h3>
+    <div class="widget tagcloud">
+      <a href="/investment/tags/api/" style="font-size: 10px;">api</a> <a href="/investment/tags/backtesting/" style="font-size: 16.67px;">backtesting</a> <a href="/investment/tags/data/" style="font-size: 13.33px;">data</a> <a href="/investment/tags/investment/" style="font-size: 13.33px;">investment</a> <a href="/investment/tags/matplotlib/" style="font-size: 10px;">matplotlib</a> <a href="/investment/tags/metrics/" style="font-size: 10px;">metrics</a> <a href="/investment/tags/pandas/" style="font-size: 13.33px;">pandas</a> <a href="/investment/tags/python/" style="font-size: 20px;">python</a> <a href="/investment/tags/setup/" style="font-size: 10px;">setup</a> <a href="/investment/tags/sma/" style="font-size: 10px;">sma</a> <a href="/investment/tags/strategy/" style="font-size: 10px;">strategy</a> <a href="/investment/tags/theory/" style="font-size: 10px;">theory</a> <a href="/investment/tags/visualization/" style="font-size: 10px;">visualization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">彙整</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/investment/archives/2025/12/">十二月 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/investment/2025/12/29/08_Backtesting_Metrics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/07_Vectorized_Backtesting/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/05_First_Strategy_SMA/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/06_Backtesting_Basics/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/investment/2025/12/29/04_Visualization/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Kyle<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/investment/" class="mobile-nav-link">Home</a>
+  
+    <a href="/investment/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/investment/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/investment/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/investment/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
